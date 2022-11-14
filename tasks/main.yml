@@ -7,6 +7,9 @@
     system: true
     local: true
     state: present
+  tags:
+    - apacheds
+    - apacheds:system
 
 - name: "Create ApacheDS user"
   ansible.builtin.user:
@@ -19,6 +22,9 @@
     system: true
     state: present
     comment: "ApacheDS system user"
+  tags:
+    - apacheds
+    - apacheds:system
 
 - name: "Download ApacheDS tar.gz file"
   ansible.builtin.get_url:
@@ -26,13 +32,9 @@
     dest: "{{ apacheds_home }}/apacheds-{{ apacheds_version }}.tar.gz"
     owner: "{{ apacheds_user }}"
     group: "{{ apacheds_group }}"
-
-- name: "Download ApacheDS tar.gz file"
-  ansible.builtin.get_url:
-    url: "{{ apacheds_download_file }}"
-    dest: "{{ apacheds_home }}/apacheds-{{ apacheds_version }}.tar.gz"
-    owner: "{{ apacheds_user }}"
-    group: "{{ apacheds_group }}"
+  tags:
+    - apacheds
+    - apacheds:setup
 
 - name: "Unarchive ApacheDS tar.gz"
   ansible.builtin.unarchive:
@@ -42,6 +44,9 @@
     owner: "{{ apacheds_user }}"
     group: "{{ apacheds_group }}"
     creates: "{{ apacheds_home }}/apacheds-{{ apacheds_version }}"
+  tags:
+    - apacheds
+    - apacheds:setup
 
 - name: "Sets ApacheDS setenv.sh"
   ansible.builtin.lineinfile:
@@ -55,6 +60,9 @@
   loop: "{{ apacheds_env }}"
   loop_control:
     loop_var: config
+  tags:
+    - apacheds
+    - apacheds:config
 
 - name: "Create systemd service"
   ansible.builtin.template:
@@ -63,6 +71,9 @@
     owner: root
     group: root
     mode: '0644'
+  tags:
+    - apacheds
+    - apacheds:service
 
 - name: "Configure systemd service"
   ansible.builtin.systemd:
@@ -70,3 +81,6 @@
     state: "{{ apacheds_service_state }}"
     enabled: "{{ apacheds_service_enabled }}"
     daemon_reload: true
+  tags:
+    - apacheds
+    - apacheds:service
