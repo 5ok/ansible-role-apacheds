@@ -1,0 +1,17 @@
+[Unit]
+Description=Apache DS
+After=syslog.target network.target
+
+[Service]
+Type=forking
+User={{ apacheds_user }}
+Group={{ apacheds_group }}
+
+ExecStart={{ apacheds_home }}/apacheds-{{ apacheds_version }}/bin/apacheds.sh start
+ExecStop={{ apacheds_home }}/apacheds-{{ apacheds_version }}/bin/apacheds.sh stop
+
+StandardOutput=journal
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

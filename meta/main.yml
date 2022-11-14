@@ -1,0 +1,27 @@
+galaxy_info:
+  role_name: apacheds
+  namespace: 5ok
+  author: Peter Hudec
+  company: 5ok s.r.o.
+  description: install and configure ApacheDS
+  license: BSD
+  min_ansible_version: 2.1
+  platforms:
+    - name: EL
+      versions:
+        - 8
+        - 9
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+        - jammy
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
+  galaxy_tags:
+    - database
+    - apacheds
+    - ldap
+dependencies: []

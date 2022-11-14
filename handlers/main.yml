@@ -1,0 +1,5 @@
+---
+- name: restart apacheds
+  ansible.builtin.systemd:
+    name: "{{ apacheds_service_name }}"
+    state: restarted

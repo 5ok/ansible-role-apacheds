@@ -1,0 +1,72 @@
+---
+
+- name: "Create ApacheDS group"
+  ansible.builtin.group:
+    name: "{{ apacheds_group }}"
+    gid: "{{ apacheds_gid | default(omit) }}"
+    system: true
+    local: true
+    state: present
+
+- name: "Create ApacheDS user"
+  ansible.builtin.user:
+    name: "{{ apacheds_user }}"
+    uid: "{{ apacheds_uid | default(omit) }}"
+    group:  "{{ apacheds_group }}"
+    shell: /bin/false
+    home: "{{ apacheds_home }}"
+    local: true
+    system: true
+    state: present
+    comment: "ApacheDS system user"
+
+- name: "Download ApacheDS tar.gz file"
+  ansible.builtin.get_url:
+    url: "{{ apacheds_download_file }}"
+    dest: "{{ apacheds_home }}/apacheds-{{ apacheds_version }}.tar.gz"
+    owner: "{{ apacheds_user }}"
+    group: "{[ apacheds_group }}"
+
+- name: "Download ApacheDS tar.gz file"
+  ansible.builtin.get_url:
+    url: "{{ apacheds_download_file }}"
+    dest: "{{ apacheds_home }}/apacheds-{{ apacheds_version }}.tar.gz"
+    owner: "{{ apacheds_user }}"
+    group: "{{ apacheds_group }}"
+
+- name: "Unarchive ApacheDS tar.gz"
+  ansible.builtin.unarchive:
+    src: "{{ apacheds_home }}/apacheds-{{ apacheds_version }}.tar.gz"
+    dest: "{{ apacheds_home }}"
+    remote_src: yes
+    owner: "{{ apacheds_user }}"
+    group: "{{ apacheds_group }}"
+    creates: "{{ apacheds_home }}/apacheds-{{ apacheds_version }}"
+
+- name: "Sets ApacheDS setenv.sh"
+  ansible.builtin.lineinfile:
+    dest: "{{ apacheds_home }}/apacheds-{{ apacheds_version }}/bin/setenv.sh"
+    regexp: "^#?{{ config.option }}.+$"
+    line: "{{ config.option }}={{ config.value }}"
+    state: "{{ config.state | default('present') }}"
+    mode: 0755
+    owner: "{{ apacheds_user }}"
+    group: "{{ apacheds_group }}"
+  loop: "{{ apacheds_env }}"
+  loop_control:
+    loop_var: config
+
+- name: "Create systemd service"
+  ansible.builtin.template:
+    src: systemd.service.j2
+    dest: /etc/systemd/system/{{ apacheds_service_name }}.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: "Configure systemd service"
+  ansible.builtin.systemd:
+    name: "{{ apacheds_service_name }}"
+    state: "{{ apacheds_service_state }}"
+    enabled: "{{ apacheds_service_enabled }}"
+    daemon_reload: true
