@@ -25,7 +25,7 @@
     url: "{{ apacheds_download_file }}"
     dest: "{{ apacheds_home }}/apacheds-{{ apacheds_version }}.tar.gz"
     owner: "{{ apacheds_user }}"
-    group: "{[ apacheds_group }}"
+    group: "{{ apacheds_group }}"
 
 - name: "Download ApacheDS tar.gz file"
   ansible.builtin.get_url:
