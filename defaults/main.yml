@@ -4,9 +4,9 @@ apacheds_version: 2.0.0.AM26
 apacheds_download_file: https://dlcdn.apache.org/directory/apacheds/dist/{{ apacheds_version }}/apacheds-{{ apacheds_version }}.tar.gz
 
 apacheds_user: apacheds
-#apacheds_uid: fill free to fill
+apacheds_uid: null
 apacheds_group: apacheds
-#apacheds_gid: fill free to fill
+apacheds_gid: null
 
 apacheds_home: /opt/apacheds
 apacheds_instances_dir: /opt/apacheds/apacheds-{{ apacheds_version }}/instances
