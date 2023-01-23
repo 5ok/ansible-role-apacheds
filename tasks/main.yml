@@ -10,6 +10,7 @@
   tags:
     - apacheds
     - apacheds:system
+    - apacheds:setup
 
 - name: "Create ApacheDS user"
   ansible.builtin.user:
@@ -25,6 +26,7 @@
   tags:
     - apacheds
     - apacheds:system
+    - apacheds:setup
 
 - name: "Download ApacheDS tar.gz file"
   ansible.builtin.get_url:
